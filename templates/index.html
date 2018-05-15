@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <title>
+            Chat room
+        </title>
+    </head>
+
+    <body>
+        <h1>
+            Welcome to the WWW
+        </h1>
+
+        <form action="#" id="msg-form">
+            <label>Message</label>
+            <input type="text" id="msg-input"></input>
+            <input type="submit"></input>
+        </form>
+        <br>
+
+        <h2>
+            <span id="connected">0</span> are viewing this page!
+        </h2>
+
+        <h2> Chat room </h2>
+        <div id="chat-room"></div>
+    </body>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script> 
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var url = "http://" + document.domain + ":" + location.port;
+            var socket = io.connect(url + "/test");
+            socket.on('counter', function(msg) {
+                $("#connected").html(msg.count);
+            });
+
+            socket.on('msg', function(msg) {
+                $("#chat-room").prepend('<p>' + msg.msg + '</p>');
+            });
+
+            $('#msg-form').submit(function(){
+                socket.emit('msg', {'msg': $('#msg-input').val()});
+                $('#msg-input').val('');
+                return false;
+            });
+        });
+    </script>
+</html>
