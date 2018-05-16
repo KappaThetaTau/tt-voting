@@ -25,8 +25,12 @@ def emit_votes(yes_count, no_count):
 
 # HTTP routes
 @app.route('/')
-def main():
+def index():
     return render_template('index.html')
+
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
 
 # WebSocket routes
 @socketio.on('connect', namespace='/app')
@@ -38,6 +42,11 @@ def ws_connect():
 @socketio.on('msg', namespace='/app')
 def ws_chat(msg):
     socketio.emit('msg', {'msg': cgi.escape(msg['msg'])}, namespace='/app')
+
+@socketio.on('candidate', namespace='/app')
+def ws_candidate(msg):
+    print msg
+    socketio.emit('candidate', {'candidate': cgi.escape(msg['candidate'])}, namespace='/app')
 
 @socketio.on('vote', namespace='/app')
 def ws_vote(msg):

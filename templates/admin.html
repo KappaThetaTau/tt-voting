@@ -1,5 +1,5 @@
 <html>
-    <head> <title> Kappa TT Voting </title> </head>
+    <head> <title> Kappa TT Voting | Admin Page </title> </head>
     <style>
         .vote-button {
             font-size: 40px;
@@ -7,12 +7,14 @@
     </style>
 
     <body>
-        <h1> Currently voting on <span id="current-candidate"></span> </h1>
+        <h1> Admin Page </h1>
+        <h1> Currently voting on <input type="text" id="current-candidate-input"></input> </h1>
         <button class="vote-button" id="vote-yes" type="button" id="vote-yes">Yes</button>
         <button class="vote-button" id="vote-no" type="button" id="vote-no">No</button> 
         <button id="vote-undo" type="button" id="vote-no">Undo</button> <br>
         <span id="yes-vote-count"> 0 </span> Yes <br>
         <span id="no-vote-count"> 0 </span> No <br>
+        <button id="vote-reset"> Reset </button>
         <br> <br> <br>
 
         <p> Please put your name in the "name" field to chat </p>
@@ -59,10 +61,6 @@
                 $("#chat-room").prepend('<p>' + msg.msg + '</p>');
             });
 
-            socket.on('candidate', function(msg) {
-                $("#current-candidate").html(msg.candidate);
-            });
-
             socket.on('uuid', function(msg) {
                 if (getCookie('uuid') == "") {
                     document.cookie = 'uuid='+msg.uuid;
@@ -79,8 +77,16 @@
                 socket.emit('vote', {uuid: getCookie('uuid'), vote: 'Yes'});
             });
 
+            $('#current-candidate-input').bind('input', function(){
+                socket.emit('candidate', {candidate: $(this).val()});
+            });
+
             $('#vote-no').click(function(){
                 socket.emit('vote', {uuid: getCookie('uuid'), vote: 'No'});
+            });
+
+            $('#vote-reset').click(function(){
+                socket.emit('vote_reset', {});
             });
 
             $('#vote-undo').click(function(){
