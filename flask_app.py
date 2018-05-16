@@ -1,6 +1,8 @@
 from gevent import monkey
 monkey.patch_all()
 
+import os
+import pdb
 import cgi
 import uuid
 import redis
@@ -9,7 +11,10 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-db = redis.StrictRedis('localhost', 6379, 0)
+db = redis.Redis(
+        host=os.environ.get('REDIS_HOST'),
+        port=os.environ.get('REDIS_PORT'),
+        password=os.environ.get('REDIS_PASS'))
 
 YES_VOTE_COUNT_KEY = 'yes_vote_count'
 NAMESPACE = '/app'
@@ -19,9 +24,13 @@ USERS_VOTED_KEY = 'users_voted'
 
 # Helpers
 def emit_votes(yes_count, no_count):
+    if yes_count is None or no_count is None:
+        return
+    yes_count_str = str(yes_count) if type(yes_count) == int else yes_count.decode('utf-8')
+    no_count_str = str(no_count) if type(no_count) == int else no_count.decode('utf-8') 
     socketio.emit('vote',
-            {YES_VOTE_COUNT_KEY: yes_count,
-                NO_VOTE_COUNT_KEY: no_count
+            {YES_VOTE_COUNT_KEY: yes_count_str,
+                NO_VOTE_COUNT_KEY: no_count_str
                 },
             namespace=NAMESPACE)
 
@@ -40,7 +49,10 @@ def ws_connect():
     emit_votes(db.get(YES_VOTE_COUNT_KEY), db.get(NO_VOTE_COUNT_KEY))
     unique_id = str(uuid.uuid4())
     socketio.emit('uuid', {'uuid': unique_id}, namespace=NAMESPACE)
-    socketio.emit('candidate', {'candidate': db.get(CURRENT_CANDIDATE_KEY)}, namespace=NAMESPACE)
+    try: # I don't care if there is no current candidate, just move on
+        socketio.emit('candidate', {'candidate': db.get(CURRENT_CANDIDATE_KEY).decode('utf-8')}, namespace=NAMESPACE)
+    except AttributeError:
+        pass
 
 @socketio.on('msg', namespace=NAMESPACE)
 def ws_chat(msg):
@@ -69,7 +81,7 @@ def ws_vote_reset(msg):
 
 @socketio.on('vote_undo', namespace=NAMESPACE)
 def ws_vote_undo(msg):
-    vote = db.hget(USERS_VOTED_KEY, msg['uuid'])
+    vote = db.hget(USERS_VOTED_KEY, msg['uuid']).decode('utf-8')
     if vote == 'Yes':
         emit_votes(db.decr(YES_VOTE_COUNT_KEY), db.get(NO_VOTE_COUNT_KEY))
     elif vote == 'No':
@@ -77,5 +89,5 @@ def ws_vote_undo(msg):
     db.hdel(USERS_VOTED_KEY, msg['uuid'])
 
 if __name__=="__main__":
-    socketio.run(app, host="0.0.0.0")
+    socketio.run(app, host="0.0.0.0", debug=True)
 

@@ -1,10 +1,6 @@
 <html>
     <head> <title> Kappa TT Voting | Admin Page </title> </head>
-    <style>
-        .vote-button {
-            font-size: 40px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
 
     <body>
         <h1> Admin Page </h1>
@@ -31,79 +27,7 @@
         <div id="chat-room"></div>
     </body>
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script> 
-    <script type="text/javascript">
-
-        function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for(var i = 0; i <ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }
-
-        $(document).ready(function() {
-            var url = "http://" + document.domain + ":" + location.port;
-            var socket = io.connect(url + "/app");
-            var canVote = false;
-
-            // Server --> Client
-            socket.on('msg', function(msg) {
-                $("#chat-room").prepend('<p>' + msg.msg + '</p>');
-            });
-
-            socket.on('uuid', function(msg) {
-                if (getCookie('uuid') == "") {
-                    document.cookie = 'uuid='+msg.uuid;
-                }
-            });
-
-            socket.on('vote', function(msg) {
-                $("#yes-vote-count").html(msg.yes_vote_count);
-                $("#no-vote-count").html(msg.no_vote_count);
-            });
-
-            // Client --> Server
-            $('#vote-yes').click(function(){
-                socket.emit('vote', {uuid: getCookie('uuid'), vote: 'Yes'});
-            });
-
-            $('#current-candidate-input').bind('input', function(){
-                socket.emit('candidate', {candidate: $(this).val()});
-            });
-
-            $('#vote-no').click(function(){
-                socket.emit('vote', {uuid: getCookie('uuid'), vote: 'No'});
-            });
-
-            $('#vote-reset').click(function(){
-                socket.emit('vote_reset', {});
-            });
-
-            $('#vote-undo').click(function(){
-                socket.emit('vote_undo', {'uuid': getCookie('uuid')});
-            });
-
-            $('#msg-form').submit(function(){
-                if ($("#name-input").val() == "") {
-                    name = "anonymous";
-                } else {
-                    name = $("#name-input").val() ;
-                }
-                msg = name + ": " + $('#msg-input').val()
-                socket.emit('msg', {'msg': msg});
-                $('#msg-input').val('');
-                return false;
-            });
-        });
-    </script>
+    <script type="text/javascript" src="{{ url_for('static',filename='script.js') }}"></script>
 </html>
