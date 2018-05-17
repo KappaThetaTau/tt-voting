@@ -6,9 +6,11 @@ import pdb
 import cgi
 import uuid
 import redis
+from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from flask import Flask, render_template
 
+load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
 db = redis.Redis(
