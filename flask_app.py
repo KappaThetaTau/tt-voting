@@ -13,13 +13,10 @@ from flask import Flask, render_template
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
-db = redis.Redis(
-        host=os.environ.get('REDIS_HOST'),
-        port=os.environ.get('REDIS_PORT'),
-        password=os.environ.get('REDIS_PASS'))
+db = redis.Redis(host='localhost', port=6379)
 
 YES_VOTE_COUNT_KEY = 'yes_vote_count'
-NAMESPACE = '/app'
+NAMESPACE = '/websocket'
 CURRENT_CANDIDATE_KEY = 'current_candidate'
 NO_VOTE_COUNT_KEY = 'no_vote_count'
 USERS_VOTED_KEY = 'users_voted'
@@ -73,6 +70,14 @@ def ws_vote(msg):
         elif msg['vote'] == 'No':
             emit_votes(db.get(YES_VOTE_COUNT_KEY), db.incr(NO_VOTE_COUNT_KEY))
         db.hset(USERS_VOTED_KEY, msg['uuid'], msg['vote'])
+    else:
+        vote = db.hget(USERS_VOTED_KEY, msg['uuid']).decode('utf-8')
+        if vote != msg['vote']:
+            if vote == 'Yes' and msg['vote'] == 'No':
+                emit_votes(db.decr(YES_VOTE_COUNT_KEY), db.incr(NO_VOTE_COUNT_KEY))
+            if vote == 'No' and msg['vote'] == 'Yes':
+                emit_votes(db.incr(YES_VOTE_COUNT_KEY), db.decr(NO_VOTE_COUNT_KEY))
+            db.hset(USERS_VOTED_KEY, msg['uuid'], msg['vote'])
 
 @socketio.on('vote_reset', namespace=NAMESPACE)
 def ws_vote_reset(msg):
@@ -80,15 +85,6 @@ def ws_vote_reset(msg):
     db.set(NO_VOTE_COUNT_KEY, 0)
     db.delete(USERS_VOTED_KEY)
     emit_votes(db.get(YES_VOTE_COUNT_KEY), db.get(NO_VOTE_COUNT_KEY))
-
-@socketio.on('vote_undo', namespace=NAMESPACE)
-def ws_vote_undo(msg):
-    vote = db.hget(USERS_VOTED_KEY, msg['uuid']).decode('utf-8')
-    if vote == 'Yes':
-        emit_votes(db.decr(YES_VOTE_COUNT_KEY), db.get(NO_VOTE_COUNT_KEY))
-    elif vote == 'No':
-        emit_votes(db.get(YES_VOTE_COUNT_KEY), db.decr(NO_VOTE_COUNT_KEY))
-    db.hdel(USERS_VOTED_KEY, msg['uuid'])
 
 if __name__=="__main__":
     socketio.run(app, host="0.0.0.0", debug=True)

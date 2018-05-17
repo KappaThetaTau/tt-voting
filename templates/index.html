@@ -1,32 +1,16 @@
 <html>
     <head> <title> Kappa TT Voting </title> </head>
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
+    {% include 'includes/header.html' %}
 
     <body>
-        <h1> Currently voting on <span id="current-candidate"></span> </h1>
-        <button class="vote-button" id="vote-yes" type="button" id="vote-yes">Yes</button>
-        <button class="vote-button" id="vote-no" type="button" id="vote-no">No</button> 
-        <button id="vote-undo" type="button" id="vote-no">Undo</button> <br>
-        <span id="yes-vote-count"> 0 </span> Yes <br>
-        <span id="no-vote-count"> 0 </span> No <br>
-        <br> <br> <br>
-
-        <p> Please put your name in the "name" field to chat </p>
-        <label> Name </label>
-        <input type="text" id="name-input"></input>
-        <br> <br>
-        <form action="#" id="msg-form">
-            <label>Chat</label>
-            <input type="text" id="msg-input"></input>
-            <input type="submit"></input>
-        </form>
-
-        <h2> Chat </h2>
-        <div id="chat-room"></div>
+        <div id="app">
+            <div id="candidate">
+                <h1> <span id="current-candidate"></span> </h1>
+            </div>
+            {% include 'includes/voting.html' %}
+            {% include 'includes/chat.html' %}
+        </div>
     </body>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script> 
-
-    <script type="text/javascript" src="{{ url_for('static',filename='script.js') }}"></script>
+    {% include 'includes/footer.html' %}
 </html>

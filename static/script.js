@@ -16,7 +16,7 @@ function getCookie(cname) {
 
 $(document).ready(function() {
     var url = "http://" + document.domain + ":" + location.port;
-    var socket = io.connect(url + "/app");
+    var socket = io.connect(url + "/websocket");
 
     // Server --> Client
     socket.on('msg', function(msg) {
@@ -34,8 +34,27 @@ $(document).ready(function() {
     });
 
     socket.on('vote', function(msg) {
-        $("#yes-vote-count").html(msg.yes_vote_count);
-        $("#no-vote-count").html(msg.no_vote_count);
+        // Calculate percentage
+        var yes_num = Number(msg.yes_vote_count);
+        var no_num = Number(msg.no_vote_count);
+        var sum = yes_num + no_num;
+        var yes_fraction = (yes_num / sum) * 100;
+        var no_fraction = (no_num / sum) * 100;
+        if (isNaN(no_fraction) || isNaN(yes_fraction)) {
+            $("#yes-bar").width("0%")
+            $("#no-bar").width("0%")
+            $("#yes-vote-count").hide();
+            $("#no-vote-count").hide();
+        } else {
+            var yes_fraction_string = yes_fraction.toString().concat("%");
+            var no_fraction_string = no_fraction.toString().concat("%");
+            $("#yes-bar").width(yes_fraction_string);
+            $("#no-bar").width(no_fraction_string);
+            $("#yes-vote-count").html(msg.yes_vote_count);
+            $("#no-vote-count").html(msg.no_vote_count);
+            $("#yes-vote-count").show();
+            $("#no-vote-count").show();
+        }
     });
 
     // Client --> Server
@@ -53,10 +72,6 @@ $(document).ready(function() {
 
     $('#vote-reset').click(function(){
         socket.emit('vote_reset', {});
-    });
-
-    $('#vote-undo').click(function(){
-        socket.emit('vote_undo', {'uuid': getCookie('uuid')});
     });
 
     $('#msg-form').submit(function(){
