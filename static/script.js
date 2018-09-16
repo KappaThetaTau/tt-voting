@@ -17,6 +17,7 @@ function getCookie(cname) {
 $(document).ready(function() {
     var url = "http://" + document.domain + ":" + location.port;
     var socket = io.connect(url + "/websocket");
+    let voteBorder = "black solid 5px";
 
     // Server --> Client
     socket.on('msg', function(msg) {
@@ -31,6 +32,7 @@ $(document).ready(function() {
 
     socket.on('candidate', function(msg) {
         $("#current-candidate").html(msg.candidate);
+        $("#current-candidate-input").val(msg.candidate);
     });
 
     socket.on('vote', function(msg) {
@@ -59,15 +61,19 @@ $(document).ready(function() {
 
     // Client --> Server
     $('#vote-yes').click(function(){
+        $(this).css('border',voteBorder);
+        $('#vote-no').css('border', 'none');
         socket.emit('vote', {uuid: getCookie('uuid'), vote: 'Yes'});
+    });
+
+    $('#vote-no').click(function(){
+        $(this).css('border',voteBorder);
+        $('#vote-yes').css('border', 'none');
+        socket.emit('vote', {uuid: getCookie('uuid'), vote: 'No'});
     });
 
     $('#current-candidate-input').bind('input', function(){
         socket.emit('candidate', {candidate: $(this).val()});
-    });
-
-    $('#vote-no').click(function(){
-        socket.emit('vote', {uuid: getCookie('uuid'), vote: 'No'});
     });
 
     $('#vote-reset').click(function(){

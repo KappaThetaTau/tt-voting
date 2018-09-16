@@ -1,9 +1,12 @@
 #app {
     display: grid;
     grid-template-columns: 1fr;
+    width: 90vw;
+    margin: auto;
 }
 .vote-button {
-    font-size: 5em;
+    font-size: 3.5em;
+    height: 3em;
     color: white;
 }
 
@@ -12,7 +15,7 @@
     margin-bottom: 1em;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 0.5em;
+    grid-gap: 1em;
 }
 
 .progress-bar {
@@ -20,11 +23,17 @@
 }
 
 .progress {
-    height: 5em;
+    height: 8em;
 }
 
 #candidate {
     text-align: center;
+    font-size: 1em;
+    width: 100%;
+}
+
+#current-candidate-input {
+    width: 66%;
 }
 
 #chat {
@@ -32,5 +41,6 @@
 }
 
 body {
-    padding: 20px;
+    padding: 0px;
+    margin: 0px;
 }
