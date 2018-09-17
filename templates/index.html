@@ -7,7 +7,9 @@
             <div id="candidate">
                 <h1> <span id="current-candidate"></span> </h1>
             </div>
-            {% include 'includes/voting.html' %}
+            <div id="voting">
+                {% include 'includes/vote-buttons-wrapper.html' %}
+            </div>
             {% include 'includes/chat.html' %}
         </div>
     </body>

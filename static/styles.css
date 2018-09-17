@@ -4,9 +4,10 @@
     width: 90vw;
     margin: auto;
 }
+
 .vote-button {
-    font-size: 3.5em;
-    height: 3em;
+    font-size: 2.5em;
+    height: 33vh;
     color: white;
 }
 
@@ -43,4 +44,10 @@
 body {
     padding: 0px;
     margin: 0px;
+}
+
+@media screen and (min-width: 800px) {
+    .vote-button {
+        font-size: 4.5em;
+    }
 }

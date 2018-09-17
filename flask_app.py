@@ -13,7 +13,7 @@ from flask import Flask, render_template
 load_dotenv()
 app = Flask(__name__)
 socketio = SocketIO(app)
-db = redis.Redis(host='localhost', port=6379)
+db = redis.Redis(host=os.getenv('REDIS_HOST'), port=os.getenv('REDIS_PORT'), password=os.getenv('REDIS_PASS'))
 
 YES_VOTE_COUNT_KEY = 'yes_vote_count'
 NAMESPACE = '/websocket'
