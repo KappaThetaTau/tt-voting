@@ -78,6 +78,7 @@ def ws_vote(msg):
             if vote == 'No' and msg['vote'] == 'Yes':
                 emit_votes(db.incr(YES_VOTE_COUNT_KEY), db.decr(NO_VOTE_COUNT_KEY))
             db.hset(USERS_VOTED_KEY, msg['uuid'], msg['vote'])
+    return 0
 
 @socketio.on('vote_reset', namespace=NAMESPACE)
 def ws_vote_reset(msg):
@@ -87,5 +88,5 @@ def ws_vote_reset(msg):
     emit_votes(db.get(YES_VOTE_COUNT_KEY), db.get(NO_VOTE_COUNT_KEY))
 
 if __name__=="__main__":
-    socketio.run(app, host="0.0.0.0")
+    socketio.run(app, host="0.0.0.0", debug=True)
 

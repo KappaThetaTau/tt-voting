@@ -60,15 +60,21 @@ $(document).ready(function() {
 
     // Client --> Server
     $('#vote-yes').click(function(){
-        $(this).css('border',voteBorder);
-        $('#vote-no').css('border', 'none');
-        socket.emit('vote', {uuid: getCookie('uuid'), vote: 'Yes'});
+        socket.emit('vote', {uuid: getCookie('uuid'), vote: 'Yes'}, (data) => {
+            if (data == 0) {
+                $(this).css('border',voteBorder);
+                $('#vote-no').css('border', 'none');
+            }
+        });
     });
 
     $('#vote-no').click(function(){
-        $(this).css('border',voteBorder);
-        $('#vote-yes').css('border', 'none');
-        socket.emit('vote', {uuid: getCookie('uuid'), vote: 'No'});
+        socket.emit('vote', {uuid: getCookie('uuid'), vote: 'No'}, (data) => {
+            if (data == 0) {
+                $(this).css('border',voteBorder);
+                $('#vote-yes').css('border', 'none');
+            }
+        });
     });
 
     $('#current-candidate-input').bind('input', function(){
