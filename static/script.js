@@ -15,7 +15,6 @@ function getCookie(cname) {
 }
 
 $(document).ready(function() {
-    var url = 
     var socket = io.connect("/websocket");
     let voteBorder = "black solid 5px";
 
