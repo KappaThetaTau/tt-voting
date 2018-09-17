@@ -15,8 +15,8 @@ function getCookie(cname) {
 }
 
 $(document).ready(function() {
-    var url = "https://" + document.domain + ":" + location.port;
-    var socket = io.connect(url + "/websocket");
+    var url = 
+    var socket = io.connect("/websocket");
     let voteBorder = "black solid 5px";
 
     // Server --> Client
