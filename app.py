@@ -86,6 +86,7 @@ def ws_vote_reset(msg):
     db.set(NO_VOTE_COUNT_KEY, 0)
     db.delete(USERS_VOTED_KEY)
     emit_votes(db.get(YES_VOTE_COUNT_KEY), db.get(NO_VOTE_COUNT_KEY))
+    socketio.emit('reset', {'none': None}, namespace=NAMESPACE)
 
 if __name__=="__main__":
     socketio.run(app, host="0.0.0.0", debug=True)

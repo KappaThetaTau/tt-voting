@@ -34,6 +34,12 @@ $(document).ready(function() {
         $("#current-candidate-input").val(msg.candidate);
     });
 
+    socket.on('reset', function(msg) {
+        $('#vote-yes').css('border', 'none');
+        $('#vote-no').css('border', 'none');
+    });
+
+
     socket.on('vote', function(msg) {
         // Calculate percentage
         var yes_num = Number(msg.yes_vote_count);

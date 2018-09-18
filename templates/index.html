@@ -10,7 +10,17 @@
             <div id="voting">
                 {% include 'includes/vote-buttons-wrapper.html' %}
             </div>
-            {% include 'includes/chat.html' %}
+            <div id="chat">
+                <p> Please put your name in the "name" field to submit your form </p>
+                <label> Name </label>
+                <input type="text" id="name-input"></input>
+                <br> <br>
+                <form action="#" id="msg-form">
+                    <label>"No" Form</label>
+                    <input type="text" id="msg-input"></input>
+                    <input type="submit"></input>
+                </form>
+            </div>
         </div>
     </body>
 
