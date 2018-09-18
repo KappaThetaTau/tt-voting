@@ -5,7 +5,10 @@
     <body>
         <div id="app">
             <div id="candidate">
-                <h1> <input type="text" style="text-align: center;" id="current-candidate-input"></input> </h1>
+                <form action="#" id="candidate-form">
+                    <h1> <input type="text" style="text-align: center;" id="current-candidate-input"></input> </h1>
+                    <input value="Change Candidate" type="submit"></input>
+                </form>
             </div>
             {% include 'includes/voting.html' %}
             <button id="vote-reset"> reset </button>

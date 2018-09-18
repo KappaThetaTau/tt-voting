@@ -83,8 +83,9 @@ $(document).ready(function() {
         });
     });
 
-    $('#current-candidate-input').bind('input', function(){
-        socket.emit('candidate', {candidate: $(this).val()});
+    $('#candidate-form').bind('submit', function(){
+        socket.emit('candidate', {candidate: $('#current-candidate-input').val()});
+        socket.emit('vote_reset', {});
     });
 
     $('#vote-reset').click(function(){
