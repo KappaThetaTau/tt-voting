@@ -31,7 +31,6 @@ $(document).ready(function() {
 
     socket.on('candidate', function(msg) {
         $("#current-candidate").html(msg.candidate);
-        $("#current-candidate-input").val(msg.candidate);
     });
 
     socket.on('reset', function(msg) {
