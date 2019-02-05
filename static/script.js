@@ -16,7 +16,7 @@ function getCookie(cname) {
 
 $(document).ready(function() {
     var socket = io.connect("/websocket");
-    let voteBorder = "black solid 5px";
+    let voteBorder = "black solid 20px";
 
     // Server --> Client
     socket.on('msg', function(msg) {
@@ -97,7 +97,7 @@ $(document).ready(function() {
         } else {
             name = $("#name-input").val() ;
         }
-        msg = name + ": " + $('#msg-input').val()
+        msg = name + ": " + $('#msg-input').val() + " (for candidate " + $("#current-candidate").text() + ")";
         socket.emit('msg', {'msg': msg});
         $('#msg-input').val('');
         return false;

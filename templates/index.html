@@ -5,9 +5,10 @@
     <body>
         <div id="app">
             <div id="candidate">
-                <h1> <span id="current-candidate"></span> </h1>
+                current candidate: <h1> <span id="current-candidate"></span> </h1>
             </div>
             <div id="voting">
+                A black border around "Yes" or "No" means that your vote was successfully submitted.
                 {% include 'includes/vote-buttons-wrapper.html' %}
             </div>
             <div id="chat">
