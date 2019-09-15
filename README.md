@@ -28,8 +28,18 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
-7. In another terminal, start redis
+7. **In another terminal**, start redis
 ```bash
 redis-server
 ```
-8. Navigate to http://localhost:5000/admin for admin page and http://localhost:5000 for voting
+8. Confirm it works by navigating to http://localhost:5000/admin for admin page and http://localhost:5000 for voting. Click yes or no and see the votes change on http://localhost:5000/admin
+9. **In another terminal**, expose the localhost remotely using localxpose. When you run this application for the first time you will be stopped because you are starting an app from an unidentified developer. Go to system preferences and open this app anyway. Then come back to your terminal and run the command again.
+```bash
+./loclx-darwin-amd64 tunnel http --to 127.0.0.1:5000
+# You should see something like this
+✓ Creating HTTP tunnel...
+
+Tunneling http://4qhxgb4rxn0o.loclx.io --> 127.0.0.1:8080
+Tunneling https://4qhxgb4rxn0o.loclx.io --> 127.0.0.1:8080
+```
+10. You should now have 3 terminals open. One for localxpose, app.py, and redis-server. Test the url by opening it in a browser. If it works, then simply share this URL to the brothers! Done!
